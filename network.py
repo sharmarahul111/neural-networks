@@ -5,6 +5,9 @@ class Neuron:
 		self.biases = biases
 class Network():
 	def __init__(self, *args: int):
+		self.inputs = args[0]
+		self.outputs = args[-1]
+		self.design = args
 		self.layers = []
 		for i in range(1,len(args)):
 			weights = np.random.rand(args[i-1], args[i])
@@ -46,8 +49,8 @@ class Network():
 			activation = self.sigmoid(activation)
 		return activation
 
-if __name__ == "__main__":
-	inp = np.array([[4,5]])
-	net = Network(2,3,1)
-	print(net)
-	print(net.forward(inp))
+	def cost(self,inputs, expected):
+		error = np.zeros(np.shape(expected[0]))
+		for inp, ex in zip(inputs, expected):
+			error += (self.forward(inp)-ex)**2
+		return np.sum(error)
