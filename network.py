@@ -8,7 +8,7 @@ class Network():
 		self.layers = []
 		for i in range(1,len(args)):
 			weights = np.random.rand(args[i-1], args[i])
-			biases = np.random.rand(args[0], args[i])
+			biases = np.random.rand(args[i])
 			self.layers.append(Neuron(weights, biases))
 	
 	def __str__(self):
@@ -36,6 +36,18 @@ class Network():
 		s+= "\n]\n"
 		return s
 
+	def sigmoid(self, x):
+		return 1./(1+np.exp(-x))
+
+	def forward(self, inp):
+		activation = inp
+		for layer in self.layers:
+			activation = activation @ layer.weights + layer.biases
+			activation = self.sigmoid(activation)
+		return activation
+
 if __name__ == "__main__":
-	net = Network(2,3,2)
+	inp = np.array([[4,5]])
+	net = Network(2,3,1)
 	print(net)
+	print(net.forward(inp))
