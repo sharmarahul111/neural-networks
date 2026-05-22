@@ -20,7 +20,7 @@ network = Network(2,2,1)
 print(network)
 
 error = network.cost(inp, expected)
-for i in range(10000):
+for i in range(3000):
 	gradient = network.finite_diff(inp, expected, eps=EPS)
 	# printing the gradient
 	# disp_gradient = Network(*network.design)
