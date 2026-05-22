@@ -15,7 +15,7 @@ train_xor = np.array([
 inp = train_xor[0: , :2]
 expected = train_xor[0: , 2:]
 EPS = 1e-3
-RATE = 1e-1
+RATE = 1e-0
 network = Network(2,2,1)
 print(network)
 
