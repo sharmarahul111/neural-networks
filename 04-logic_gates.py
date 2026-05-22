@@ -12,15 +12,15 @@ train_xor = np.array([
 	[1,0,1],
 	[1,1,0]
 ])
-inp = train_or[0: , :2]
-expected = train_or[0: , 2:]
+inp = train_xor[0: , :2]
+expected = train_xor[0: , 2:]
 EPS = 1e-3
-RATE = 1e-2
-network = Network(2,1)
+RATE = 1e-1
+network = Network(2,2,1)
 print(network)
 
 error = network.cost(inp, expected)
-for i in range(20000):
+for i in range(10000):
 	gradient = network.finite_diff(inp, expected, eps=EPS)
 	# printing the gradient
 	# disp_gradient = Network(*network.design)
