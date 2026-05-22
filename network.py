@@ -44,9 +44,11 @@ class Network():
 
 	def forward(self, inp):
 		activation = inp
-		for layer in self.layers:
-			activation = activation @ layer.weights + layer.biases
+		for i in range(len(self.layers)-1):
+			activation = activation @ self.layers[i].weights + self.layers[i].biases
 			activation = self.sigmoid(activation)
+		activation = activation @ self.layers[-1].weights + self.layers[i-1].biases
+		# activation = self.sigmoid(activation)
 		return activation
 
 	def cost(self,inputs, expected):
