@@ -117,3 +117,8 @@ Cost: 0.24886695959615662 => 0.02484119569626647
 
 [Done] exited with code=0 in 63.194 seconds
 ```
+
+## Estimate sin function
+[sin.py](07-sin.py)
+
+![sin function prediction](img/07-sin.png)
