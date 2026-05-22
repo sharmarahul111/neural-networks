@@ -9,8 +9,9 @@ class Network():
 		self.design = args
 		self.layers = []
 		for i in range(1,len(args)):
-			weights = np.random.rand(args[i-1], args[i])
-			biases = np.random.rand(args[i])
+			weights = np.random.randn(args[i-1], args[i])*.5
+			# biases = np.random.rand(args[i])
+			biases = np.zeros(args[i])
 			self.layers.append(Layer(weights, biases))
 	
 	def __str__(self):
@@ -42,20 +43,24 @@ class Network():
 		# return x
 		return 1./(1+np.exp(-x))
 
+	def tanh(self, x):
+		return np.tanh(x)
+
 	def forward(self, inp):
 		activation = inp
 		for i in range(len(self.layers)-1):
 			activation = activation @ self.layers[i].weights + self.layers[i].biases
-			activation = self.sigmoid(activation)
-		activation = activation @ self.layers[-1].weights + self.layers[i-1].biases
-		# activation = self.sigmoid(activation)
+			activation = self.tanh(activation)
+		activation = activation @ self.layers[-1].weights + self.layers[-1].biases
+		activation = self.sigmoid(activation)
 		return activation
 
 	def cost(self,inputs, expected):
-		error = np.zeros(np.shape(expected[0]))
+		error = 0
 		for inp, ex in zip(inputs, expected):
-			error += (self.forward(inp)-ex)**2
-		return np.sum(error)
+			
+			error += np.mean((self.forward(inp)-ex)**2)
+		return error/len(inputs)
 	
 	def finite_diff(self, inp, expected, eps):
 		gradient = []
