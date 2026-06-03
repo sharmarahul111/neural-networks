@@ -5,9 +5,10 @@ class Layer:
 		self.biases = biases
 
 class Network():
-	def __init__(self, *args: int):
+	def __init__(self, *args: int, lr=.3):
 		self.design = args
 		self.layers = []
+		self.lr = lr
 		for i in range(1,len(args)):
 			weights = np.random.randn(args[i-1], args[i])*.5
 			biases = np.zeros(args[i])
@@ -48,16 +49,48 @@ class Network():
 		activation = inp
 		for i in range(len(self.layers)-1):
 			activation = activation @ self.layers[i].weights + self.layers[i].biases
-			activation = self.tanh(activation)
+			activation = self.sigmoid(activation)
 		activation = activation @ self.layers[-1].weights + self.layers[-1].biases
 		activation = self.sigmoid(activation)
 		return activation
 
+	def backprop(self, inputs, expected):
+		activations = [inputs]
+		activation = inputs
+		# pre_activations = []
+		for i in range(len(self.layers)-1):
+			activation = activation @ self.layers[i].weights + self.layers[i].biases
+			activation = self.sigmoid(activation)
+			activations.append(activation)
+		# last layer may decide to use different activation function
+		activation = activation @ self.layers[-1].weights + self.layers[-1].biases
+		activation = self.sigmoid(activation)
+		activations.append(activation)
+
+		# doing the backprop
+		output = activations[-1]
+		delta = (output - expected) * output * (1-output)
+		deltas = [delta]
+		for i in range(len(self.layers)-2, -1, -1):
+			delta = (delta @ self.layers[i+1].weights.T) * activations[i+1] * (1 - activations[i+1])
+			deltas.append(delta)
+		deltas.reverse()
+
+		# calculatinge the gradients
+		gradient = []
+		for i in range(len(self.layers)):
+			g = Layer()
+			g.weights = np.outer(activations[i], deltas[i])
+			g.biases = deltas[i].copy()
+
+			gradient.append(g)
+		# return activations, deltas
+		return gradient
+
 	def cost(self,inputs, expected):
 		error = 0
 		for inp, ex in zip(inputs, expected):
-			
-			error += np.mean((self.forward(inp)-ex)**2)
+			error += .5*np.mean((self.forward(inp)-ex)**2)
 		return error/len(inputs)
 	
 	def finite_diff(self, inp, expected, eps):
