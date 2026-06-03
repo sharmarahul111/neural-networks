@@ -10,7 +10,6 @@ class Network():
 		self.layers = []
 		for i in range(1,len(args)):
 			weights = np.random.randn(args[i-1], args[i])*.5
-			# biases = np.random.rand(args[i])
 			biases = np.zeros(args[i])
 			self.layers.append(Layer(weights, biases))
 	
@@ -40,7 +39,6 @@ class Network():
 		return s
 
 	def sigmoid(self, x):
-		# return x
 		return 1./(1+np.exp(-x))
 
 	def tanh(self, x):
@@ -94,3 +92,10 @@ class Network():
 		for layer, g in zip(self.layers, gradient):
 			layer.weights -= g.weights*rate
 			layer.biases -= g.biases*rate
+
+	def mutate(self, diversity=.1):
+		net = Network(*self.design)
+		for i in range(len(self.layers)):
+			net.layers[i].weights = self.layers[i].weights + np.random.randn(*self.layers[i].weights.shape)*diversity
+			net.layers[i].biases = self.layers[i].biases + np.random.randn(*self.layers[i].biases.shape)*diversity
+		return net
